@@ -1,3 +1,5 @@
+import unittest
+
 from hidb import fileStoreDB
 
 test_data = {
@@ -7,19 +9,19 @@ test_data = {
 }
 
 
-class TestFilestoreDB:
+class TestFilestoreDB(unittest.TestCase):
     def test_one(self):
         db = fileStoreDB("./")
         db.create("test_data", test_data)
-        self.assertEqual(db.read("test_data", test_data))
-        self.assertIsInstance(db.read("test_data", dict))
+        self.assertEqual(db.read("test_data"), test_data)
+        self.assertIsInstance(db.read("test_data"), dict)
         with self.assertRaises(KeyError):
             db.read("test_data2")
 
     def test_two(self):
         db = fileStoreDB("./")
         db.create("test_data", test_data)
-        self.assertEqual(db.read("test_data", test_data))
+        self.assertEqual(db.read("test_data"), test_data)
         db.delete("test_data")
         with self.assertRaises(KeyError):
             db.read("test_data")
