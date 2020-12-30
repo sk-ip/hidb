@@ -18,8 +18,14 @@ class fileStoreDB(DB):
         self.filestore.data[key] = dataWrapper(value, ttl)
 
     def showData(self, key: str):
-        currtime = datetime.now().time()
-        datatime = self.filestore.data[key].timestamp
+        if self.filestore.data[key].ttl:
+            currtime = datetime.today().timestamp()
+            datatime = self.filestore.data[key].timestamp
+            print(currtime, datatime)
+            if currtime - datatime >= self.filestore.data[key].ttl:
+                self.delete(key)
+                raise KeyError(f"{key} does not exist")
+
         return self.filestore.data[key].data
 
     def saveData(self, filename):
