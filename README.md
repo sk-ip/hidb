@@ -1,4 +1,4 @@
-# hidb
+# hidb :wave:
 
 [![Python package](https://github.com/sk-ip/hidb/workflows/Python%20package/badge.svg)](https://github.com/sk-ip/hidb/actions)
 [![Upload Python Package](https://github.com/sk-ip/hidb/workflows/Upload%20Python%20Package/badge.svg)](https://github.com/hidb/actions)
