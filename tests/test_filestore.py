@@ -1,4 +1,6 @@
+import os
 import unittest
+import tempfile
 
 from hidb import fileStoreDB
 
@@ -25,3 +27,20 @@ class TestFilestoreDB(unittest.TestCase):
         db.delete("test_data")
         with self.assertRaises(KeyError):
             db.read("test_data")
+
+    def test_three(self):
+        with tempfile.TemporaryDirectory() as tempdir:
+            db = fileStoreDB(tempdir)
+            db.create("test_data", test_data)
+            db.saveData("testfile.pk")
+            self.assertTrue(os.path.isfile("testfile.pk"))
+
+    def test_four(self):
+        with tempfile.TemporaryDirectory() as tempdir:
+            db = fileStoreDB(tempdir)
+            db.create("test_data", test_data)
+            db.saveData("testfile.pk")
+            self.assertTrue(os.path.isfile("testfile.pk"))
+            db2 = fileStoreDB(tempdir)
+            db2.loadData("testfile.pk")
+            self.assertEqual(db2.read("test_data"), test_data)
