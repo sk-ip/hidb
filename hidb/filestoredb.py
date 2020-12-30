@@ -1,3 +1,5 @@
+import os
+import pickle
 from typing import Dict
 from datetime import datetime
 
@@ -20,8 +22,16 @@ class fileStoreDB(DB):
         datatime = self.filestore.data[key].timestamp
         return self.filestore.data[key].data
 
-    def saveData(self):
-        pass
+    def saveData(self, filename):
+        self.filepath = os.path.join(self.location + filename)
+        with open(filename, "wb") as outputfile:
+            pickle.dump(self.filestore, outputfile, pickle.HIGHEST_PROTOCOL)
+
+    def loadData(self, filename):
+        if not os.path.isfile(filename):
+            raise FileNotFoundError(f"File not found {os.path.join(self.location, filename)}")
+        with open(filename, "rb") as readfile:
+            self.filestore = pickle.load(readfile)
 
     def create(self, key: str, value: Dict, ttl: int = None):
         if len(key) > 32:
@@ -29,7 +39,6 @@ class fileStoreDB(DB):
         if key in self.filestore.keys:
             raise KeyError(f"{key} does not exist")
         self.addNewData(key, value, ttl)
-        self.saveData()
 
     def read(self, key: str):
         if len(key) > 32:
@@ -46,4 +55,3 @@ class fileStoreDB(DB):
             raise KeyError(f"{key} does not exist")
         self.filestore.keys.remove(key)
         del self.filestore.data[key]
-        self.saveData()
