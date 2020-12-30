@@ -10,5 +10,5 @@ class fileWrapper(object):
 class dataWrapper:
     def __init__(self, data, ttl):
         self.data = data
-        self.timestamp = datetime.now().time()
+        self.timestamp = datetime.today().timestamp()
         self.ttl = ttl
