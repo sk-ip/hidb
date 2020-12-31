@@ -3,3 +3,5 @@
 hidb/__pycache__/
 tests/__pycache__/
 testfile.pk
+build/
+dist/
