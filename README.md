@@ -28,11 +28,7 @@ create method takes three values
 * __data__ It is the JSON object to store
 * __ttl__ It is an integer, the number of seconds the data should be available in the database, if left blank the data would persist indefinitely.
 ```python
-data = {
-  "name": "John Doe",
-  "age": 20,
-  "hobby": ["Reading", "Coding", "Travelling"]
-}
+data = '{"name": "John Doe", "age": 20, "hobby": ["Reading", "Coding","Travelling"]}'
 db.create("mydata", data, 20)
 ```
 
