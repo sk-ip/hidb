@@ -2,14 +2,11 @@ import os
 import time
 import unittest
 import tempfile
+from typing import Dict, Any
 
 from hidb import fileStoreDB
 
-test_data = {
-    "test1": "value",
-    "test2": 12,
-    "test3": [12, 23, 34],
-}
+test_data = '{"test1": "value", "test2": 30, "test3": [12, 23, 34]}'
 
 
 class TestFilestoreDB(unittest.TestCase):
@@ -19,7 +16,6 @@ class TestFilestoreDB(unittest.TestCase):
             db = fileStoreDB(tempdir)
             db.create("test_data", test_data)
             self.assertEqual(db.read("test_data"), test_data)
-            self.assertIsInstance(db.read("test_data"), dict)
             with self.assertRaises(KeyError):
                 db.read("test_data2")
 
