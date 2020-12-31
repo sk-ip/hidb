@@ -2,6 +2,8 @@ import os
 import time
 import unittest
 import tempfile
+import requests
+import json
 from typing import Dict, Any
 
 from hidb import fileStoreDB
@@ -63,3 +65,19 @@ class TestFilestoreDB(unittest.TestCase):
             time.sleep(10)
             with self.assertRaises(KeyError):
                 db.read("test_data2")
+
+    def test_six(self):
+        # Using a weather api to store data
+        with tempfile.TemporaryDirectory() as tempdir:
+            db = fileStoreDB(tempdir)
+            r = requests.get('https://www.metaweather.com/api/location/44418/')
+            if(r.ok):
+                wdata = r.json()
+            db.create("weather_data", wdata)
+            self.assertEqual(db.read("weather_data"), wdata)
+            db.create("weather_data2", wdata, 10)
+            time.sleep(8)
+            self.assertEqual(db.read("weather_data2"), wdata)
+            time.sleep(2)
+            with self.assertRaises(KeyError):
+                db.read("weather_data2")
