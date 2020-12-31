@@ -1,6 +1,6 @@
 import os
 import pickle
-from typing import Dict
+from typing import Dict, Any
 from datetime import datetime
 
 from .db import DB
@@ -13,7 +13,8 @@ class fileStoreDB(DB):
         self.filestore = fileWrapper()
         self.location = location
 
-    def addNewData(self, key: str, value: Dict, ttl: int):
+    def addNewData(self, key: str, value: Dict[str, Any], ttl: int):
+        self.filestore.current_database_size += value.__sizeof__()
         self.filestore.keys.add(key)
         self.filestore.data[key] = dataWrapper(value, ttl)
 
@@ -39,11 +40,15 @@ class fileStoreDB(DB):
         with open(filename, "rb") as readfile:
             self.filestore = pickle.load(readfile)
 
-    def create(self, key: str, value: Dict, ttl: int = None):
+    def create(self, key: str, value: Dict[str, Any], ttl: int = None):
         if len(key) > 32:
             raise KeyError(f"Length of key: {len(key)} exceeds limits should be: 32")
         if key in self.filestore.keys:
             raise KeyError(f"{key} does not exist")
+        if value.__sizeof__() > self.filestore.max_data_size:
+            raise MemoryError(f"The size of json object is {value.__sizeof__()} bytes should be {self.filestore.max_data_size} bytes")
+        if self.filestore.current_database_size + value.__sizeof__() >= self.filestore.max_database_size:
+            raise MemoryError(f"Cannot create key: {key}, database size exceeds the limit {self.filestore.max_database_size}")
         self.addNewData(key, value, ttl)
 
     def read(self, key: str):
@@ -59,5 +64,6 @@ class fileStoreDB(DB):
             raise KeyError(f"Length of key: {len(key)} exceeds limits should be: 32")
         if key not in self.filestore.keys:
             raise KeyError(f"{key} does not exist")
+        self.filestore.current_database_size -= self.filestore.data[key].__sizeof__()
         self.filestore.keys.remove(key)
         del self.filestore.data[key]
