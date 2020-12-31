@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="hidb",
-    version="0.0.1",
+    version="0.0.2",
     author="Sudhanshu Kumar",
     author_email="sudhanshukumar5459@gmail.com",
     description="It is a file based key value data store ",
